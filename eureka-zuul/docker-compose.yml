@@ -1,0 +1,45 @@
+version: '3'
+
+networks:
+  cloud-network: # 定义一个自定义网络
+
+services:
+  eureka:
+    build:
+      context: ./eureka
+      dockerfile: build/Dockerfile
+    ports:
+      - "8888:8888"  # 假设项目B运行在8080端口，映射到主机的8080端口
+    networks:
+      - cloud-network
+    hostname: eureka
+
+  zuul:
+    build:
+      context: ./zuul
+      dockerfile: build/Dockerfile
+    ports:
+      - "9999:9999" # 假设项目A也运行在8080端口，映射到主机的8080端口
+    depends_on:
+      - eureka # 确保项目B先启动
+    environment:
+      - HOSTNAME=eureka
+      - PORT=8888
+    networks:
+      - cloud-network
+    hostname: zuul
+
+  hello:
+    build:
+      context: ./hello-server
+      dockerfile: build/Dockerfile
+    #ports:
+     # - "20000:20000"
+    depends_on:
+      - eureka # 确保项目B先启动
+    environment:
+      - HOSTNAME=eureka
+      - PORT=8888
+    networks:
+      - cloud-network
+    #hostname: zuul

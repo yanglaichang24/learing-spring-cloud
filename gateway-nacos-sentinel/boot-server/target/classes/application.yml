@@ -1,0 +1,31 @@
+server:
+  port: 8023
+
+# 应用名称 （nacos会将该名称当做服务名称）
+spring:
+  application:
+    name: boot-service
+
+  cloud:
+    nacos:
+      server-addr: ${NACOS_HOSTNAME:t2}:8848
+    #server-addr: ${NACOS_HOST:t2}:${NACOS_PORT:8849}
+      discovery:
+        namespace: test
+        group: DEFAULT_GROUP
+        #username: nacos
+        #password: nacos
+
+    sentinel:
+      transport:
+        dashboard: 192.168.2.6:8080
+      datasource:
+        ds_nacos:
+          nacos:
+            server-addr: ${NACOS_HOSTNAME:t2}:8848?namespace=test
+            dataId: flow-rule
+            rule-type: flow
+      scg:
+        fallback:
+          mode: response
+          response-body: "{\"code\":100,\"message\":\" error \"}"

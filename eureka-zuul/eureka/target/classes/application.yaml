@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: eureka-yang
+
+server:
+  port: 8888
+
+eureka:
+  client:
+    service-url:
+      # Eureka 服务器的地址，客户端将来会从这个地址获取注册信息以及注册自己
+      defaultZone : http://${HOSTNAME:localhost}:${PORT:8888}/eureka
+
+    #是否将自身注册到 Eureka 服务器
+    register-with-eureka: false
+
+    #是否从 Eureka 服务器获取注册信息
+    fetch-registry: false
+

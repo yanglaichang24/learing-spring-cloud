@@ -1,0 +1,24 @@
+server:
+  port: 20000
+
+spring:
+  application:
+    name: dubbo-client
+
+  cloud:
+    nacos:
+      server-addr: ${NACOS_HOSTNAME:t2}:8848
+      discovery:
+        namespace: test
+        group: DEFAULT_GROUP
+
+dubbo:
+   application:
+     name: dubbo-consumer
+
+   registry:
+     address: nacos://${NACOS_HOSTNAME:t2}:8848?namespace=test
+
+logging:
+  level:
+    root: info

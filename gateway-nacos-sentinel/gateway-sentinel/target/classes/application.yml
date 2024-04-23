@@ -1,0 +1,59 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: api-gateway-sentinel
+
+  cloud:
+    # gateway的配置
+    gateway:
+      #路由规则
+      routes:
+        - id: boot_route
+          uri: lb://boot-service
+          predicates:
+            - Path=/product/**
+
+        - id: sentinel_route
+          uri: lb://boot-service
+          predicates:
+              - Path=/sentinel/**
+
+        - id: dubbo_route
+          uri: lb://dubbo-client
+          predicates:
+            - Path=/hello/**
+
+    #配置Nacos
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOSTNAME:t2}:8848
+        username: nacos
+        password: nacos
+        namespace: test
+        group: DEFAULT_GROUP
+
+#流控降级
+    sentinel:
+       transport:
+         dashboard: 192.168.2.6:8080
+       datasource:
+         flow-rule:
+           nacos:
+             server-addr: ${NACOS_HOSTNAME:t2}:8848?namespace=test
+             dataId: gw-flow-rule
+             rule-type: gw-flow
+       filter:
+         enabled: false
+       scg:
+         fallback:
+           mode: response
+           response-body: "{\"code\":100,\"message\":\" error \"}"
+
+
+
+
+logging:
+  level:
+    root: DEBUG

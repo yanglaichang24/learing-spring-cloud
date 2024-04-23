@@ -1,0 +1,44 @@
+server:
+  port: 10000
+
+spring:
+  application:
+    name: dubbo
+
+  cloud:
+   sentinel:
+     transport:
+       dashboard: 192.168.2.6:8080
+     datasource:
+       ds_nacos:
+         nacos:
+           server-addr: ${NACOS_HOSTNAME:t2}:8848?namespace=test
+           dataId: flow-rule
+           rule-type: flow
+     scg:
+       fallback:
+         mode: response
+         response-body: "{\"code\":100,\"message\":\" error \"}"
+
+
+dubbo:
+   application:
+     name: dubbo-server
+
+   protocol:
+     name: dubbo
+     port: -1
+
+   scan:
+     base-packages: com.yang
+
+   registry:
+     address: nacos://${NACOS_HOSTNAME:t2}:8848?namespace=test
+
+
+
+
+
+logging:
+  level:
+    root: info
